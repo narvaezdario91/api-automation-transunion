@@ -185,3 +185,57 @@ jobs:
           if [ "${{ github.ref_name }}" = "main" ] || [ "${{ github.ref_name }}" = "develop" ] || [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             echo "- **Living Documentation (${{ github.ref_name }})**: [View Serenity Report on GitHub Pages](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/serenity-report/${{ github.ref_name }}/index.html)" >> $GITHUB_STEP_SUMMARY
           fi
+
+      - name: Post or Update PR Test Summary Comment
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const statusIcon = '${{ job.status }}' === 'success' ? '✅ Passed' : '❌ Failed';
+            const envName = '${{ github.event.inputs.environment || 'default' }}';
+            const tagFilter = '${{ github.event.inputs.tags || 'ALL (Full Suite)' }}';
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const portalUrl = `https://${context.repo.owner}.github.io/${context.repo.repo}/`;
+            const sonarUrl = `https://sonarcloud.io/project/overview?id=narvaezdario91_api-automation-transunion`;
+
+            const commentBody = `## 📊 TransUnion API Automation - PR Test Results
+
+            | Validation / Metric | Status / Value |
+            | :--- | :--- |
+            | **Test Execution Status** | ${statusIcon} |
+            | **Target Environment** | \`${envName}\` |
+            | **Cucumber Tag Filter** | \`${tagFilter}\` |
+            | **Commit SHA** | \`${context.sha.substring(0, 7)}\` |
+
+            ### 🔗 Quick Links & Quality Artifacts
+            - 🌐 [Living Documentation Portal](${portalUrl})
+            - 🛡️ [SonarCloud Quality Gate Dashboard](${sonarUrl})
+            - 📦 [Download Serenity HTML & JUnit Artifacts](${runUrl})
+
+            ---
+            *Automated QA report updated for PR #${context.issue.number}*`;
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const botComment = comments.find(c => c.user && c.user.login === 'github-actions[bot]' && c.body.includes('TransUnion API Automation - PR Test Results'));
+
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: commentBody
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: commentBody
+              });
+            }
