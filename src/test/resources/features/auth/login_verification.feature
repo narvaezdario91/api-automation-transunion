@@ -11,6 +11,7 @@ Característica: Verificación de Login de Usuario
     Cuando el actor verifica el login con email "transunion.automation.test@gmail.com" y contraseña "Test@Automation2024"
     Entonces el mensaje de respuesta debe ser "User exists!"
     Y el código de respuesta en el cuerpo debe ser 200
+    Y el cuerpo de la respuesta debe coincidir con el esquema JSON "schemas/auth/login_response_schema.json"
 
   @regression @negative @api8
   Escenario: Intentar verificación de login sin proporcionar el parámetro email

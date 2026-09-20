@@ -51,6 +51,36 @@ public final class AccountDataFactory {
     }
 
     /**
+     * Builds test account data with specified email, password and name, filling remaining required profile fields.
+     *
+     * @param email    Account email
+     * @param password Account password
+     * @param name     Full display name for the account
+     * @return Populated AccountData with the given name
+     */
+    public static AccountData withEmailPasswordAndName(String email, String password, String name) {
+        return AccountData.builder()
+                .name(name)
+                .email(email)
+                .password(password)
+                .title("Mr")
+                .birthDate("15")
+                .birthMonth("08")
+                .birthYear("1990")
+                .firstName("Automation")
+                .lastName("Tester")
+                .company("TransUnion")
+                .address1("Av Calle 100 # 15-20")
+                .address2("Piso 5")
+                .country("United States")
+                .zipcode("110111")
+                .state("California")
+                .city("Los Angeles")
+                .mobileNumber("3001234567")
+                .build();
+    }
+
+    /**
      * Builds a uniquely generated dynamic account for isolated lifecycle tests (e.g. create & delete).
      *
      * @return AccountData with timestamped unique email

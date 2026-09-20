@@ -10,6 +10,7 @@ Característica: Automatización de API para Búsqueda de Productos
     Dado que el actor está listo para consumir la API de Automation Exercise
     Cuando el actor busca productos con la palabra clave "<palabra_clave>"
     Entonces el código de estado de la respuesta debe ser 200
+    Y el cuerpo de la respuesta debe coincidir con el esquema JSON "schemas/catalog/products_list_schema.json"
     Y todos los productos devueltos deben coincidir con el criterio de búsqueda para "<palabra_clave>"
 
     Ejemplos:
