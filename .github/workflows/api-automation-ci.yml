@@ -201,20 +201,20 @@ jobs:
 
             const commentBody = `## 📊 TransUnion API Automation - PR Test Results
 
-| Validation / Metric | Status / Value |
-| :--- | :--- |
-| **Test Execution Status** | ${statusIcon} |
-| **Target Environment** | \`${envName}\` |
-| **Cucumber Tag Filter** | \`${tagFilter}\` |
-| **Commit SHA** | \`${context.sha.substring(0, 7)}\` |
+            | Validation / Metric | Status / Value |
+            | :--- | :--- |
+            | **Test Execution Status** | ${statusIcon} |
+            | **Target Environment** | \`${envName}\` |
+            | **Cucumber Tag Filter** | \`${tagFilter}\` |
+            | **Commit SHA** | \`${context.sha.substring(0, 7)}\` |
 
-### 🔗 Quick Links & Quality Artifacts
-- 🌐 [Living Documentation Portal](${portalUrl})
-- 🛡️ [SonarCloud Quality Gate Dashboard](${sonarUrl})
-- 📦 [Download Serenity HTML & JUnit Artifacts](${runUrl})
+            ### 🔗 Quick Links & Quality Artifacts
+            - 🌐 [Living Documentation Portal](${portalUrl})
+            - 🛡️ [SonarCloud Quality Gate Dashboard](${sonarUrl})
+            - 📦 [Download Serenity HTML & JUnit Artifacts](${runUrl})
 
----
-*Automated QA report updated for PR #${context.issue.number}*`;
+            ---
+            *Automated QA report updated for PR #${context.issue.number}*`;
 
             const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
