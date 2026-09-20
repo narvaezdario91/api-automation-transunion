@@ -1,16 +1,23 @@
 # 🚀 TransUnion API Automation Framework
 
+[![CI/CD Pipeline](https://github.com/narvaezdario91/api-automation-transunion/actions/workflows/api-automation-ci.yml/badge.svg)](https://github.com/narvaezdario91/api-automation-transunion/actions/workflows/api-automation-ci.yml)
+[![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=narvaezdario91_api-automation-transunion&metric=alert_status)](https://sonarcloud.io/project/overview?id=narvaezdario91_api-automation-transunion)
+[![Living Documentation](https://img.shields.io/badge/Living%20Docs-GitHub%20Pages-00a3e0.svg)](https://narvaezdario91.github.io/api-automation-transunion/)
 [![Java 21](https://img.shields.io/badge/Java-21-orange.svg)](https://www.oracle.com/java/technologies/downloads/#java21)
 [![Gradle](https://img.shields.io/badge/Gradle-8.8-blue.svg)](https://gradle.org/)
 [![Serenity BDD](https://img.shields.io/badge/Serenity%20BDD-4.2.16-brightgreen.svg)](https://serenity-bdd.info/)
 [![Cucumber](https://img.shields.io/badge/Cucumber-7.18.0-darkgreen.svg)](https://cucumber.io/)
 [![REST-Assured](https://img.shields.io/badge/REST--Assured-5.4.0-red.svg)](https://rest-assured.io/)
 [![Checkstyle](https://img.shields.io/badge/Checkstyle-10.17.0-brightgreen.svg)](https://checkstyle.org/)
-[![Quality Gate](https://img.shields.io/badge/SonarQube-Quality%20Gate-4c92c3.svg)](https://sonarqube.org/)
-[![CI/CD](https://img.shields.io/badge/GitHub%20Actions-CI%2FCD-2088FF.svg)](https://github.com/features/actions)
 [![Pattern](https://img.shields.io/badge/Architecture-Screenplay%20%2B%20SOLID-blueviolet.svg)]()
 
 Framework empresarial de automatización de pruebas para servicios y APIs REST, diseñado bajo los más altos estándares de calidad, **principios SOLID**, **Screenplay Pattern**, análisis estático de código, Quality Gates y especificaciones ejecutables con **BDD (Cucumber)**.
+
+> ### 🌐 Living Documentation & Quality Portal
+> - 🚀 **Portal Principal de Reportes:** [https://narvaezdario91.github.io/api-automation-transunion/](https://narvaezdario91.github.io/api-automation-transunion/)
+> - 📄 **Reporte Rama `main` (Producción):** [Serenity Report `main`](https://narvaezdario91.github.io/api-automation-transunion/serenity-report/main/index.html)
+> - ⚡ **Reporte Rama `develop` (Staging):** [Serenity Report `develop`](https://narvaezdario91.github.io/api-automation-transunion/serenity-report/develop/index.html)
+> - 🛡️ **SonarCloud Dashboard:** [SonarCloud Project Overview](https://sonarcloud.io/project/overview?id=narvaezdario91_api-automation-transunion)
 
 ---
 
