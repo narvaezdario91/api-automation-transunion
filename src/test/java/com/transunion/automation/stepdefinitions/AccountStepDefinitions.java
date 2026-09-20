@@ -2,13 +2,17 @@ package com.transunion.automation.stepdefinitions;
 
 import com.transunion.automation.models.account.AccountData;
 import com.transunion.automation.models.account.AccountDataFactory;
+import com.transunion.automation.models.account.UserDetailResponseDto;
+import com.transunion.automation.questions.UserDetailResponse;
 import com.transunion.automation.tasks.account.CreateAccount;
 import com.transunion.automation.tasks.account.DeleteAccount;
 import com.transunion.automation.tasks.account.GetUserDetail;
 import com.transunion.automation.tasks.account.UpdateAccount;
 import io.cucumber.java.es.Cuando;
 import io.cucumber.java.es.Dado;
+import io.cucumber.java.es.Y;
 import net.serenitybdd.screenplay.actors.OnStage;
+import org.assertj.core.api.Assertions;
 
 /**
  * Step definitions for Automation Exercise account lifecycle operations.
@@ -51,5 +55,13 @@ public class AccountStepDefinitions {
                     DeleteAccount.withCredentials(dynamicUser.getEmail(), dynamicUser.getPassword())
             );
         }
+    }
+
+    @Y("los detalles del usuario consultado deben ser válidos para el email {string}")
+    public void losDetallesDelUsuarioConsultadoDebenSerValidosParaElEmail(String email) {
+        UserDetailResponseDto response = OnStage.theActorInTheSpotlight().asksFor(UserDetailResponse.received());
+        Assertions.assertThat(response.getUser()).isNotNull();
+        Assertions.assertThat(response.getUser().getEmail()).isEqualToIgnoringCase(email);
+        Assertions.assertThat(response.getUser().getName()).isNotBlank();
     }
 }

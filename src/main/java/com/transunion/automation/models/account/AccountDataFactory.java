@@ -29,25 +29,25 @@ public final class AccountDataFactory {
      * @return Populated AccountData
      */
     public static AccountData withEmailAndPassword(String email, String password) {
-        AccountData data = new AccountData();
-        data.setName("Automation Test User");
-        data.setEmail(email);
-        data.setPassword(password);
-        data.setTitle("Mr");
-        data.setBirthDate("15");
-        data.setBirthMonth("08");
-        data.setBirthYear("1990");
-        data.setFirstName("Automation");
-        data.setLastName("Tester");
-        data.setCompany("TransUnion");
-        data.setAddress1("Av Calle 100 # 15-20");
-        data.setAddress2("Piso 5");
-        data.setCountry("United States");
-        data.setZipcode("110111");
-        data.setState("California");
-        data.setCity("Los Angeles");
-        data.setMobileNumber("3001234567");
-        return data;
+        return AccountData.builder()
+                .name("Automation Test User")
+                .email(email)
+                .password(password)
+                .title("Mr")
+                .birthDate("15")
+                .birthMonth("08")
+                .birthYear("1990")
+                .firstName("Automation")
+                .lastName("Tester")
+                .company("TransUnion")
+                .address1("Av Calle 100 # 15-20")
+                .address2("Piso 5")
+                .country("United States")
+                .zipcode("110111")
+                .state("California")
+                .city("Los Angeles")
+                .mobileNumber("3001234567")
+                .build();
     }
 
     /**

@@ -19,6 +19,7 @@ Característica: Gestión del Ciclo de Vida de Cuentas de Usuario
     Entonces el código de estado de la respuesta debe ser 200
     Y el código de respuesta en el cuerpo debe ser 200
     Y el cuerpo de la respuesta debe coincidir con el esquema JSON "schemas/account/user_detail_schema.json"
+    Y los detalles del usuario consultado deben ser válidos para el email "transunion.automation.test@gmail.com"
 
   @regression @api13 @requires_user
   Escenario: Actualizar los datos del perfil de una cuenta existente
