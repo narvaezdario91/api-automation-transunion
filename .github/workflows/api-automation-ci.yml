@@ -2,9 +2,9 @@ name: API Automation CI/CD Pipeline
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, develop, 'feature/**', 'fix/**' ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, develop ]
   workflow_dispatch:
     inputs:
       environment:
@@ -32,7 +32,7 @@ permissions:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' && github.ref != 'refs/heads/develop' }}
 
 jobs:
   static-analysis:
