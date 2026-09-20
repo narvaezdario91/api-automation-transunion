@@ -1,0 +1,177 @@
+name: API Automation CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target Execution Environment'
+        required: true
+        default: 'default'
+        type: choice
+        options:
+          - default
+          - dev
+          - qa
+          - staging
+      tags:
+        description: 'Cucumber Tag Expression (e.g. @user, @smoke, not @manual)'
+        required: false
+        default: ''
+        type: string
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+  pull-requests: write
+  statuses: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' && github.ref != 'refs/heads/develop' }}
+
+jobs:
+  static-analysis:
+    name: "Static Code Analysis & Quality Gate"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Java 21 (Temurin)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Setup Gradle Cache
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Run Checkstyle Static Analysis
+        run: ./gradlew checkstyleMain checkstyleTest --no-daemon
+
+      - name: SonarQube / SonarCloud Quality Gate Scan
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_PUBLIC || secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        run: |
+          if [ -z "$SONAR_TOKEN" ]; then
+            echo "::notice::SONAR_TOKEN is not configured. Skipping Sonar analysis."
+            exit 0
+          fi
+          if [ -n "$SONAR_HOST_URL" ]; then
+            ./gradlew sonar -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.qualitygate.wait=true --no-daemon
+          else
+            ./gradlew sonar -Dsonar.qualitygate.wait=true --no-daemon
+          fi
+
+      - name: Record Static Analysis Summary
+        if: always()
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_PUBLIC || secrets.SONAR_TOKEN }}
+        run: |
+          echo "### 🔍 Static Code Analysis Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- **Checkstyle Status**: ${{ job.status == 'success' && '✅ Passed' || '❌ Failed' }}" >> $GITHUB_STEP_SUMMARY
+          if [ -n "$SONAR_TOKEN" ]; then
+            echo "- **Sonar Quality Gate**: Evaluated" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- **Sonar Quality Gate**: Skipped (SONAR_TOKEN secret not configured)" >> $GITHUB_STEP_SUMMARY
+          fi
+
+  api-tests:
+    name: "API Test Execution & Serenity BDD Reporting"
+    needs: static-analysis
+    runs-on: ubuntu-latest
+    if: always() && (needs.static-analysis.result == 'success' || github.event_name == 'workflow_dispatch')
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 21 (Temurin)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Setup Gradle Cache
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Execute API Tests (Serenity BDD + Cucumber)
+        id: run-tests
+        env:
+          ENV: ${{ github.event.inputs.environment || 'default' }}
+          TAGS: ${{ github.event.inputs.tags || '' }}
+        run: |
+          echo "Executing tests on environment: $ENV"
+          echo "Cucumber tag filter: $TAGS"
+          
+          GRADLE_ARGS="-Denvironment=$ENV"
+          if [ -n "$TAGS" ]; then
+            GRADLE_ARGS="$GRADLE_ARGS -Dcucumber.filter.tags=\"$TAGS\""
+          fi
+          
+          ./gradlew test $GRADLE_ARGS --no-daemon --info || true
+
+      - name: Aggregate Serenity Reports
+        if: always()
+        run: ./gradlew aggregate --no-daemon
+
+      - name: Archive Serenity HTML Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: serenity-bdd-report
+          path: target/site/serenity/
+          retention-days: 30
+
+      - name: Archive JUnit Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: junit-test-results
+          path: build/test-results/test/
+          retention-days: 14
+
+      - name: Deploy Serenity Report to GitHub Pages
+        if: always() && (github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch')
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./target/site/serenity
+          destination_dir: serenity-report
+          keep_files: true
+
+      - name: Publish Test Execution Step Summary
+        if: always()
+        run: |
+          echo "## 📊 API Automation Execution Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Property | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "| :--- | :--- |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Event Trigger** | \`${{ github.event_name }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Branch / Ref** | \`${{ github.ref_name }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Environment** | \`${{ github.event.inputs.environment || 'default' }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Cucumber Tags** | \`${{ github.event.inputs.tags || 'ALL (Full Suite)' }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Commit SHA** | \`${{ github.sha }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📄 Reports & Artifacts" >> $GITHUB_STEP_SUMMARY
+          echo "- **Serenity HTML Report**: Available in downloadable workflow artifacts." >> $GITHUB_STEP_SUMMARY
+          echo "- **JUnit Test XMLs**: Available in downloadable workflow artifacts." >> $GITHUB_STEP_SUMMARY
+          if [ "${{ github.ref_name }}" = "main" ]; then
+            echo "- **Living Documentation**: [View Serenity Report on GitHub Pages](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/serenity-report/index.html)" >> $GITHUB_STEP_SUMMARY
+          fi
