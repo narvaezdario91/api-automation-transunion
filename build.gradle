@@ -81,7 +81,9 @@ checkstyleTest {
 
 sonar {
     properties {
-        property "sonar.projectKey", "TransUnion_api-automation-transunion"
+        property "sonar.projectKey", "narvaezdario91_api-automation-transunion"
+        property "sonar.organization", "narvaezdario91"
+        property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.projectName", "TransUnion API Automation Framework"
         property "sonar.sources", "src/main/java"
         property "sonar.tests", "src/test/java"
