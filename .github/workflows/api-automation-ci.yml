@@ -147,13 +147,23 @@ jobs:
           path: build/test-results/test/
           retention-days: 14
 
-      - name: Deploy Serenity Report to GitHub Pages
+      - name: Prepare GitHub Pages Deployment Bundle
+        if: always() && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' || github.event_name == 'workflow_dispatch')
+        run: |
+          mkdir -p target/gh-pages-bundle/serenity-report/${{ github.ref_name }}
+          if [ -d "target/site/serenity" ]; then
+            cp -r target/site/serenity/* target/gh-pages-bundle/serenity-report/${{ github.ref_name }}/
+          fi
+          if [ -f ".github/pages/index.html" ]; then
+            cp .github/pages/index.html target/gh-pages-bundle/index.html
+          fi
+
+      - name: Deploy to GitHub Pages
         if: always() && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' || github.event_name == 'workflow_dispatch')
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./target/site/serenity
-          destination_dir: serenity-report/${{ github.ref_name }}
+          publish_dir: ./target/gh-pages-bundle
           keep_files: true
 
       - name: Publish Test Execution Step Summary

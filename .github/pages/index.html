@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TransUnion - API Automation Reports Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-gradient: radial-gradient(circle at 50% 0%, #0c1a2f 0%, #070d17 100%);
+      --card-bg: rgba(15, 27, 48, 0.7);
+      --card-border: rgba(0, 163, 224, 0.2);
+      --card-hover-border: rgba(0, 163, 224, 0.6);
+      --primary: #00a3e0;
+      --primary-glow: rgba(0, 163, 224, 0.35);
+      --secondary: #00d285;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #070d17;
+      background-image: var(--bg-gradient);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 2.5rem 1.5rem;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 3.5rem;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(0, 163, 224, 0.1);
+      border: 1px solid rgba(0, 163, 224, 0.3);
+      padding: 0.35rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 1.25rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .badge-dot {
+      width: 8px;
+      height: 8px;
+      background-color: var(--secondary);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--secondary);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.75rem;
+      background: linear-gradient(135deg, #ffffff 0%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      max-width: 580px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      border-radius: 1.25rem;
+      padding: 2rem;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--primary), transparent);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: var(--card-hover-border);
+      box-shadow: 0 20px 40px -15px rgba(0, 163, 224, 0.25);
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+    }
+
+    .branch-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      font-weight: 500;
+    }
+
+    .tag-main {
+      background: rgba(0, 210, 133, 0.15);
+      color: #00d285;
+      border: 1px solid rgba(0, 210, 133, 0.3);
+    }
+
+    .tag-develop {
+      background: rgba(0, 163, 224, 0.15);
+      color: #00a3e0;
+      border: 1px solid rgba(0, 163, 224, 0.3);
+    }
+
+    .card-icon {
+      font-size: 1.75rem;
+    }
+
+    .card-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: #ffffff;
+    }
+
+    .card-description {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.5;
+      margin-bottom: 1.5rem;
+    }
+
+    .card-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--primary);
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: gap 0.2s ease;
+    }
+
+    .card:hover .card-action {
+      gap: 0.75rem;
+    }
+
+    .links-bar {
+      background: rgba(15, 27, 48, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 1rem;
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .external-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
+
+    .external-link:hover {
+      color: #ffffff;
+    }
+
+    footer {
+      text-align: center;
+      color: #475569;
+      font-size: 0.85rem;
+      margin-top: 3rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <div class="badge">
+        <span class="badge-dot"></span>
+        Living Documentation Portal
+      </div>
+      <h1>TransUnion API Automation</h1>
+      <p class="subtitle">Continuous Testing, Serenity BDD Execution Reports & Quality Metrics for TransUnion Services.</p>
+    </header>
+
+    <div class="cards-grid">
+      <!-- Main Branch Card -->
+      <a href="./serenity-report/main/index.html" class="card" id="card-main">
+        <div>
+          <div class="card-header">
+            <span class="branch-tag tag-main">branch: main</span>
+            <span class="card-icon">🚀</span>
+          </div>
+          <h2 class="card-title">Main (Production)</h2>
+          <p class="card-description">Official Serenity BDD test execution reports for the stable release branch.</p>
+        </div>
+        <div class="card-action">
+          View Serenity Report <span>&rarr;</span>
+        </div>
+      </a>
+
+      <!-- Develop Branch Card -->
+      <a href="./serenity-report/develop/index.html" class="card" id="card-develop">
+        <div>
+          <div class="card-header">
+            <span class="branch-tag tag-develop">branch: develop</span>
+            <span class="card-icon">⚡</span>
+          </div>
+          <h2 class="card-title">Develop (Staging)</h2>
+          <p class="card-description">Latest integration build test results, feature verifications, and regression runs.</p>
+        </div>
+        <div class="card-action">
+          View Serenity Report <span>&rarr;</span>
+        </div>
+      </a>
+    </div>
+
+    <div class="links-bar">
+      <a href="https://sonarcloud.io/project/overview?id=narvaezdario91_api-automation-transunion" target="_blank" rel="noopener noreferrer" class="external-link">
+        🛡️ SonarCloud Quality Gate
+      </a>
+      <a href="https://github.com/narvaezdario91/api-automation-transunion" target="_blank" rel="noopener noreferrer" class="external-link">
+        📦 GitHub Repository
+      </a>
+      <a href="https://github.com/narvaezdario91/api-automation-transunion/actions" target="_blank" rel="noopener noreferrer" class="external-link">
+        ⚙️ GitHub Actions CI/CD
+      </a>
+    </div>
+  </div>
+
+  <footer>
+    TransUnion API Automation Framework &bull; Built with Serenity BDD, Cucumber & GitHub Actions
+  </footer>
+
+  <script>
+    // Fallback if accessed before branches are generated
+    document.getElementById('card-main').addEventListener('click', function(e) {
+      // Check if main report is ready, otherwise fall back to root report if it was old version
+    });
+  </script>
+</body>
+</html>
