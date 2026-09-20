@@ -1,0 +1,70 @@
+plugins {
+    id 'java'
+    id 'net.serenity-bdd.serenity-gradle-plugin' version '4.2.16'
+}
+
+group = 'com.transunion.automation'
+version = '1.0.0-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Serenity BDD Core & Screenplay
+    implementation "net.serenity-bdd:serenity-core:${serenityVersion}"
+    implementation "net.serenity-bdd:serenity-cucumber:${serenityVersion}"
+    implementation "net.serenity-bdd:serenity-screenplay:${serenityVersion}"
+    implementation "net.serenity-bdd:serenity-screenplay-rest:${serenityVersion}"
+    implementation "net.serenity-bdd:serenity-rest-assured:${serenityVersion}"
+
+    // REST Assured & JSON Schema Validation
+    implementation "io.rest-assured:rest-assured:${restAssuredVersion}"
+    implementation "io.rest-assured:json-schema-validator:${restAssuredVersion}"
+
+    // Cucumber & JUnit 4 / Serenity Runner
+    implementation "io.cucumber:cucumber-java:${cucumberVersion}"
+    implementation "io.cucumber:cucumber-junit:${cucumberVersion}"
+    testImplementation 'junit:junit:4.13.2'
+
+    // Assertions
+    testImplementation "org.assertj:assertj-core:${assertjVersion}"
+
+    // Dynamic Data Generation (Datafaker)
+    implementation "net.datafaker:datafaker:${datafakerVersion}"
+
+    // Lombok for Builder Pattern
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+    testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
+    testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+
+    // Jackson / Serialization
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.1'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.17.1'
+
+    // Logging
+    implementation "org.slf4j:slf4j-api:${slf4jVersion}"
+    testImplementation "ch.qos.logback:logback-classic:${logbackVersion}"
+}
+
+test {
+    testLogging.showStandardStreams = true
+    systemProperty 'file.encoding', 'UTF-8'
+    systemProperties System.properties.subMap(['cucumber.filter.tags', 'environment'])
+    outputs.upToDateWhen { false }
+    finalizedBy 'aggregate'
+}
+
+serenity {
+    outputDirectory = file("target/site/serenity")
+    reports = ["html"]
+}
+
+gradle.startParameter.continueOnFailure = true
