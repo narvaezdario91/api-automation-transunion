@@ -5,9 +5,12 @@
 [![Serenity BDD](https://img.shields.io/badge/Serenity%20BDD-4.2.16-brightgreen.svg)](https://serenity-bdd.info/)
 [![Cucumber](https://img.shields.io/badge/Cucumber-7.18.0-darkgreen.svg)](https://cucumber.io/)
 [![REST-Assured](https://img.shields.io/badge/REST--Assured-5.4.0-red.svg)](https://rest-assured.io/)
+[![Checkstyle](https://img.shields.io/badge/Checkstyle-10.17.0-brightgreen.svg)](https://checkstyle.org/)
+[![Quality Gate](https://img.shields.io/badge/SonarQube-Quality%20Gate-4c92c3.svg)](https://sonarqube.org/)
+[![CI/CD](https://img.shields.io/badge/GitHub%20Actions-CI%2FCD-2088FF.svg)](https://github.com/features/actions)
 [![Pattern](https://img.shields.io/badge/Architecture-Screenplay%20%2B%20SOLID-blueviolet.svg)]()
 
-Framework empresarial de automatización de pruebas para servicios y APIs REST, diseñado bajo los más altos estándares de calidad, **principios SOLID**, **Screenplay Pattern** y especificaciones ejecutables con **BDD (Cucumber)**.
+Framework empresarial de automatización de pruebas para servicios y APIs REST, diseñado bajo los más altos estándares de calidad, **principios SOLID**, **Screenplay Pattern**, análisis estático de código, Quality Gates y especificaciones ejecutables con **BDD (Cucumber)**.
 
 ---
 
@@ -17,11 +20,13 @@ Framework empresarial de automatización de pruebas para servicios y APIs REST, 
 3. [Estructura del Proyecto](#-estructura-del-proyecto)
 4. [Requisitos Previos](#-requisitos-previos)
 5. [Instalación y Configuración](#-instalación-y-configuración)
-6. [Ejecución de Pruebas](#-ejecución-de-pruebas)
-7. [Reportes y Evidencias](#-reportes-y-evidencias)
-8. [Buenas Prácticas](#-buenas-prácticas)
-9. [Autores](#-autores)
-10. [Licencia y Derechos](#-licencia-y-derechos)
+6. [Análisis Estático y Quality Gates](#-análisis-estático-y-quality-gates)
+7. [Ejecución de Pruebas](#-ejecución-de-pruebas)
+8. [Pipeline de CI/CD (GitHub Actions)](#-pipeline-de-cicd-github-actions)
+9. [Reportes y Evidencias](#-reportes-y-evidencias)
+10. [Buenas Prácticas](#-buenas-prácticas)
+11. [Autores](#-autores)
+12. [Licencia y Derechos](#-licencia-y-derechos)
 
 ---
 
@@ -164,6 +169,26 @@ Antes de ejecutar el proyecto, asegúrate de contar con:
 
 ---
 
+## 🔍 Análisis Estático y Quality Gates
+
+El proyecto integra validación de calidad de código y detección temprana de malas prácticas:
+
+### 1. Checkstyle (Reglas de Estilo y Clean Code)
+Verifica formato, convenciones de nomenclatura Java, imports no utilizados y estructura de bloques de código configurados en `config/checkstyle/checkstyle.xml`:
+```powershell
+# Ejecutar verificación de estilo en código fuente y pruebas
+.\gradlew.bat checkstyleMain checkstyleTest
+```
+
+### 2. SonarQube / SonarCloud (Quality Gate)
+Analiza vulnerabilidades, bugs potenciales, code smells y deuda técnica:
+```powershell
+# Ejecutar análisis de Sonar localmente
+.\gradlew.bat sonar -Dsonar.host.url=https://sonarcloud.io -Dsonar.token=TU_TOKEN
+```
+
+---
+
 ## 🏃 Ejecución de Pruebas
 
 El framework incluye el wrapper de Gradle (`gradlew`), por lo que no necesitas instalar Gradle de forma global.
@@ -204,6 +229,42 @@ Selecciona el entorno configurado en `serenity.conf` (`default`, `dev`, `qa`, `s
 * **IntelliJ IDEA / Eclipse / VS Code:**
   * Abre [`ApiTestSuiteRunner.java`](file:///src/test/java/com/transunion/automation/runners/ApiTestSuiteRunner.java), clic derecho $\rightarrow$ **Run 'ApiTestSuiteRunner'**.
   * O abre directamente cualquier archivo `.feature` y ejecuta el escenario deseado.
+
+---
+
+## 🚀 Pipeline de CI/CD (GitHub Actions)
+
+El archivo `.github/workflows/api-automation-ci.yml` orquesta la integración y despliegue continuo con las siguientes capacidades:
+
+```
++-----------------------------------------------------------------------------------------+
+|                                GitHub Actions Workflow                                  |
++-----------------------------------------------------------------------------------------+
+|  [ Triggers ]                                                                           |
+|   • Push & Pull Requests a 'main' (Ejecución completa automática).                      |
+|   • workflow_dispatch (Ejecución manual parametrizada por 'environment' y 'tags').      |
+|                                                                                         |
+|  [ Job 1: Static Analysis & Quality Gate ]                                              |
+|   • Setup JDK 21 (Temurin) + Gradle Cache.                                              |
+|   • Checkstyle validation (`checkstyleMain`, `checkstyleTest`).                         |
+|   • SonarQube / SonarCloud Scanner con evaluación de Quality Gate.                      |
+|                                                                                         |
+|  [ Job 2: API Test Execution & Reporting ]                                              |
+|   • Ejecución de pruebas Serenity BDD con filtrado dinámico.                            |
+|   • Carga de artefactos `target/site/serenity` y `build/test-results/test`.             |
+|   • Publicación automática de reportes HTML en GitHub Pages (`gh-pages`).               |
+|   • Resumen visual en GITHUB_STEP_SUMMARY.                                              |
++-----------------------------------------------------------------------------------------+
+```
+
+### Ejecución Manual desde GitHub (`workflow_dispatch`):
+1. Navega a la pestaña **Actions** en tu repositorio de GitHub.
+2. Selecciona **API Automation CI/CD Pipeline**.
+3. Haz clic en **Run workflow**.
+4. Configura los parámetros:
+   - **Target Execution Environment**: `default`, `dev`, `qa` o `staging`.
+   - **Cucumber Tag Expression**: Expresión de tags (ej. `@user`, `@smoke and not @manual` o en blanco para la suite completa).
+5. Haz clic en **Run workflow** para iniciar la ejecución.
 
 ---
 

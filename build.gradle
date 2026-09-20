@@ -1,5 +1,7 @@
 plugins {
     id 'java'
+    id 'checkstyle'
+    id 'org.sonarqube' version '5.1.0.4882'
     id 'net.serenity-bdd.serenity-gradle-plugin' version '4.2.16'
 }
 
@@ -62,9 +64,36 @@ test {
     finalizedBy 'aggregate'
 }
 
+checkstyle {
+    toolVersion = '10.17.0'
+    configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
+    ignoreFailures = false
+    maxWarnings = 0
+}
+
+checkstyleMain {
+    source = 'src/main/java'
+}
+
+checkstyleTest {
+    source = 'src/test/java'
+}
+
+sonar {
+    properties {
+        property "sonar.projectKey", "TransUnion_api-automation-transunion"
+        property "sonar.projectName", "TransUnion API Automation Framework"
+        property "sonar.sources", "src/main/java"
+        property "sonar.tests", "src/test/java"
+        property "sonar.java.binaries", "build/classes"
+        property "sonar.junit.reportPaths", "build/test-results/test"
+    }
+}
+
 serenity {
     outputDirectory = file("target/site/serenity")
     reports = ["html"]
 }
 
 gradle.startParameter.continueOnFailure = true
+
