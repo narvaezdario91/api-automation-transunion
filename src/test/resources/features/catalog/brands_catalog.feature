@@ -1,21 +1,21 @@
-# language: en
+# language: es
 @catalog @brands
-Feature: Brands Catalog API Automation
-  As an API consumer
-  I want to query the brands list from the catalog
-  So that I can validate available brand listings, schema compliance, and unsupported operation handling
+Característica: Automatización de API para Catálogo de Marcas
+  Como consumidor de la API
+  Quiero consultar el listado de marcas del catálogo
+  Para validar las marcas disponibles, cumplimiento del esquema y manejo de operaciones no permitidas
 
   @smoke @regression @contract
-  Scenario: Successfully retrieve all brands and validate JSON schema contract
-    Given the actor is ready to consume the Automation Exercise API
-    When the actor queries the complete brands list
-    Then the response status code should be 200
-    And the response body should match the JSON schema "schemas/catalog/brands_list_schema.json"
-    And the catalog should contain brands with valid identifiers
+  Escenario: Consultar exitosamente todas las marcas y validar el contrato de esquema JSON
+    Dado que el actor está listo para consumir la API de Automation Exercise
+    Cuando el actor consulta la lista completa de marcas
+    Entonces el código de estado de la respuesta debe ser 200
+    Y el cuerpo de la respuesta debe coincidir con el esquema JSON "schemas/catalog/brands_list_schema.json"
+    Y el catálogo debe contener marcas con identificadores válidos
 
   @regression @negative
-  Scenario: Attempt PUT to brands list endpoint and receive method not supported response
-    Given the actor is ready to consume the Automation Exercise API
-    When the actor sends an unsupported "PUT" request to the brands list endpoint
-    Then the response message should be "This request method is not supported."
-    And the response code in the body should be 405
+  Escenario: Intentar método PUT en el endpoint de lista de marcas y recibir respuesta de método no soportado
+    Dado que el actor está listo para consumir la API de Automation Exercise
+    Cuando el actor envía una solicitud no soportada "PUT" al endpoint de lista de marcas
+    Entonces el mensaje de respuesta debe ser "This request method is not supported."
+    Y el código de respuesta en el cuerpo debe ser 405

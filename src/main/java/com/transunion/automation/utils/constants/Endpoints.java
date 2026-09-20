@@ -9,10 +9,6 @@ public final class Endpoints {
         // Utility constant class
     }
 
-    public static final String USERS = "/api/users";
-    public static final String USER_BY_ID = "/api/users/{id}";
-    public static final String LOGIN = "/api/login";
-    public static final String REGISTER = "/api/register";
     public static final String PRODUCTS_LIST = "/api/productsList";
     public static final String BRANDS_LIST = "/api/brandsList";
     public static final String SEARCH_PRODUCT = "/api/searchProduct";

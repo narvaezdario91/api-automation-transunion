@@ -1,26 +1,26 @@
-# language: en
+# language: es
 @catalog @search
-Feature: Product Search API Automation
-  As an API consumer
-  I want to search for products using keywords
-  So that I can filter catalog items and receive descriptive errors when criteria are missing
+Característica: Automatización de API para Búsqueda de Productos
+  Como consumidor de la API
+  Quiero buscar productos utilizando palabras clave
+  Para filtrar artículos del catálogo y recibir errores descriptivos cuando faltan criterios de búsqueda
 
   @smoke @regression
-  Scenario Outline: Successfully search products with a valid keyword
-    Given the actor is ready to consume the Automation Exercise API
-    When the actor searches products with keyword "<keyword>"
-    Then the response status code should be 200
-    And all returned products should match the search criteria for "<keyword>"
+  Esquema del escenario: Buscar productos exitosamente con una palabra clave válida
+    Dado que el actor está listo para consumir la API de Automation Exercise
+    Cuando el actor busca productos con la palabra clave "<palabra_clave>"
+    Entonces el código de estado de la respuesta debe ser 200
+    Y todos los productos devueltos deben coincidir con el criterio de búsqueda para "<palabra_clave>"
 
-    Examples:
-      | keyword |
-      | top     |
-      | tshirt  |
-      | jean    |
+    Ejemplos:
+      | palabra_clave |
+      | top           |
+      | tshirt        |
+      | jean          |
 
   @regression @negative
-  Scenario: Search products without providing search_product parameter
-    Given the actor is ready to consume the Automation Exercise API
-    When the actor searches products without providing the search parameter
-    Then the response message should be "Bad request, search_product parameter is missing in POST request."
-    And the response code in the body should be 400
+  Escenario: Buscar productos sin proporcionar el parámetro search_product
+    Dado que el actor está listo para consumir la API de Automation Exercise
+    Cuando el actor busca productos sin proporcionar el parámetro de búsqueda
+    Entonces el mensaje de respuesta debe ser "Bad request, search_product parameter is missing in POST request."
+    Y el código de respuesta en el cuerpo debe ser 400

@@ -7,15 +7,18 @@ import com.transunion.automation.models.catalog.ProductsListResponseDto;
 import com.transunion.automation.questions.ApiResponseCode;
 import com.transunion.automation.questions.ApiResponseMessage;
 import com.transunion.automation.questions.BrandsListResponse;
+import com.transunion.automation.questions.LastResponseStatusCode;
 import com.transunion.automation.questions.ProductsListResponse;
+import com.transunion.automation.questions.ResponseSchemaMatches;
 import com.transunion.automation.tasks.catalog.ExecuteUnsupportedMethod;
 import com.transunion.automation.tasks.catalog.GetBrandsList;
 import com.transunion.automation.tasks.catalog.GetProductsList;
 import com.transunion.automation.tasks.catalog.SearchProduct;
 import com.transunion.automation.utils.constants.Endpoints;
-import io.cucumber.java.en.Given;
-import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
+import io.cucumber.java.es.Cuando;
+import io.cucumber.java.es.Dado;
+import io.cucumber.java.es.Entonces;
+import io.cucumber.java.es.Y;
 import net.serenitybdd.model.environment.EnvironmentSpecificConfiguration;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.actors.OnStage;
@@ -28,12 +31,12 @@ import static net.serenitybdd.screenplay.GivenWhenThen.seeThat;
 import static org.hamcrest.Matchers.equalTo;
 
 /**
- * Step Definitions for Automation Exercise Products and Brands Catalog API testing.
+ * Step Definitions para la automatización de pruebas de las APIs de Automation Exercise en español.
  */
 public class CatalogStepDefinitions {
 
-    @Given("the actor is ready to consume the Automation Exercise API")
-    public void theActorIsReadyToConsumeTheAutomationExerciseApi() {
+    @Dado("que el actor está listo para consumir la API de Automation Exercise")
+    public void queElActorEstaListoParaConsumirLaApiDeAutomationExercise() {
         EnvironmentVariables environmentVariables = SystemEnvironmentVariables.createEnvironmentVariables();
         String baseUrl = EnvironmentSpecificConfiguration.from(environmentVariables)
                 .getOptionalProperty("environments.automationexercise.restapi.baseurl")
@@ -43,41 +46,51 @@ public class CatalogStepDefinitions {
         actor.can(CallAnApi.at(baseUrl));
     }
 
-    @When("the actor queries the complete products list")
-    public void theActorQueriesTheCompleteProductsList() {
+    @Cuando("el actor consulta la lista completa de productos")
+    public void elActorConsultaLaListaCompletaDeProductos() {
         OnStage.theActorInTheSpotlight().attemptsTo(GetProductsList.fromCatalog());
     }
 
-    @When("the actor sends an unsupported {string} request to the products list endpoint")
-    public void theActorSendsAnUnsupportedRequestToTheProductsListEndpoint(String httpMethod) {
+    @Cuando("el actor envía una solicitud no soportada {string} al endpoint de lista de productos")
+    public void elActorEnviaUnaSolicitudNoSoportadaAlEndpointDeListaDeProductos(String httpMethod) {
         OnStage.theActorInTheSpotlight().attemptsTo(ExecuteUnsupportedMethod.on(Endpoints.PRODUCTS_LIST, httpMethod));
     }
 
-    @When("the actor queries the complete brands list")
-    public void theActorQueriesTheCompleteBrandsList() {
+    @Cuando("el actor consulta la lista completa de marcas")
+    public void elActorConsultaLaListaCompletaDeMarcas() {
         OnStage.theActorInTheSpotlight().attemptsTo(GetBrandsList.fromCatalog());
     }
 
-    @When("the actor sends an unsupported {string} request to the brands list endpoint")
-    public void theActorSendsAnUnsupportedRequestToTheBrandsListEndpoint(String httpMethod) {
+    @Cuando("el actor envía una solicitud no soportada {string} al endpoint de lista de marcas")
+    public void elActorEnviaUnaSolicitudNoSoportadaAlEndpointDeListaDeMarcas(String httpMethod) {
         OnStage.theActorInTheSpotlight().attemptsTo(ExecuteUnsupportedMethod.on(Endpoints.BRANDS_LIST, httpMethod));
     }
 
-    @When("the actor searches products with keyword {string}")
-    public void theActorSearchesProductsWithKeyword(String keyword) {
+    @Cuando("el actor busca productos con la palabra clave {string}")
+    public void elActorBuscaProductosConLaPalabraClave(String keyword) {
         OnStage.theActorInTheSpotlight().attemptsTo(SearchProduct.withTerm(keyword));
     }
 
-    @When("the actor searches products without providing the search parameter")
-    public void theActorSearchesProductsWithoutProvidingTheSearchParameter() {
+    @Cuando("el actor busca productos sin proporcionar el parámetro de búsqueda")
+    public void elActorBuscaProductosSinProporcionarElParametroDeBusqueda() {
         OnStage.theActorInTheSpotlight().attemptsTo(SearchProduct.withoutParameters());
     }
 
-    @Then("the catalog should contain products with valid details")
-    public void theCatalogShouldContainProductsWithValidDetails() {
+    @Entonces("el código de estado de la respuesta debe ser {int}")
+    public void elCodigoDeEstadoDeLaRespuestaDebeSer(Integer expectedStatusCode) {
+        OnStage.theActorInTheSpotlight().should(seeThat(LastResponseStatusCode.is(), equalTo(expectedStatusCode)));
+    }
+
+    @Y("el cuerpo de la respuesta debe coincidir con el esquema JSON {string}")
+    public void elCuerpoDeLaRespuestaDebeCoincidirConElEsquemaJson(String schemaPath) {
+        OnStage.theActorInTheSpotlight().should(seeThat(ResponseSchemaMatches.fromPath(schemaPath), equalTo(true)));
+    }
+
+    @Y("el catálogo debe contener productos con detalles válidos")
+    public void elCatalogoDebeContenerProductosConDetallesValidos() {
         ProductsListResponseDto response = OnStage.theActorInTheSpotlight().asksFor(ProductsListResponse.received());
         Assertions.assertThat(response.getProducts())
-                .as("Products list should not be empty")
+                .as("La lista de productos no debe estar vacía")
                 .isNotEmpty();
 
         ProductDto firstProduct = response.getProducts().get(0);
@@ -86,11 +99,11 @@ public class CatalogStepDefinitions {
         Assertions.assertThat(firstProduct.getPrice()).isNotBlank();
     }
 
-    @Then("the catalog should contain brands with valid identifiers")
-    public void theCatalogShouldContainBrandsWithValidIdentifiers() {
+    @Y("el catálogo debe contener marcas con identificadores válidos")
+    public void elCatalogoDebeContenerMarcasConIdentificadoresValidos() {
         BrandsListResponseDto response = OnStage.theActorInTheSpotlight().asksFor(BrandsListResponse.received());
         Assertions.assertThat(response.getBrands())
-                .as("Brands list should not be empty")
+                .as("La lista de marcas no debe estar vacía")
                 .isNotEmpty();
 
         BrandDto firstBrand = response.getBrands().get(0);
@@ -98,21 +111,21 @@ public class CatalogStepDefinitions {
         Assertions.assertThat(firstBrand.getBrand()).isNotBlank();
     }
 
-    @Then("the response message should be {string}")
-    public void theResponseMessageShouldBe(String expectedMessage) {
+    @Entonces("el mensaje de respuesta debe ser {string}")
+    public void elMensajeDeRespuestaDebeSer(String expectedMessage) {
         OnStage.theActorInTheSpotlight().should(seeThat(ApiResponseMessage.returned(), equalTo(expectedMessage)));
     }
 
-    @Then("the response code in the body should be {int}")
-    public void theResponseCodeInTheBodyShouldBe(Integer expectedCode) {
+    @Y("el código de respuesta en el cuerpo debe ser {int}")
+    public void elCodigoDeRespuestaEnElCuerpoDebeSer(Integer expectedCode) {
         OnStage.theActorInTheSpotlight().should(seeThat(ApiResponseCode.fromBody(), equalTo(expectedCode)));
     }
 
-    @Then("all returned products should match the search criteria for {string}")
-    public void allReturnedProductsShouldMatchTheSearchCriteriaFor(String keyword) {
+    @Y("todos los productos devueltos deben coincidir con el criterio de búsqueda para {string}")
+    public void todosLosProductosDevueltosDebenCoincidirConElCriterioDeBusquedaPara(String keyword) {
         ProductsListResponseDto response = OnStage.theActorInTheSpotlight().asksFor(ProductsListResponse.received());
         Assertions.assertThat(response.getProducts())
-                .as("Search result should contain matching products")
+                .as("El resultado de búsqueda no debe estar vacío")
                 .isNotEmpty();
 
         boolean anyMatchesKeyword = response.getProducts().stream()
@@ -121,7 +134,7 @@ public class CatalogStepDefinitions {
                         && product.getCategory().getCategory().toLowerCase().contains(keyword.toLowerCase())));
 
         Assertions.assertThat(anyMatchesKeyword)
-                .as("At least one returned product should match the keyword: " + keyword)
+                .as("Al menos un producto devuelto debe coincidir con la palabra clave: " + keyword)
                 .isTrue();
     }
 }

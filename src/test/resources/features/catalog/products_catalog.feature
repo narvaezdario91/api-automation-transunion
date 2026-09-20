@@ -1,21 +1,21 @@
-# language: en
+# language: es
 @catalog @products
-Feature: Products Catalog API Automation
-  As an API consumer
-  I want to interact with the products catalog endpoints
-  So that I can retrieve the full catalog, validate contract schemas, and verify unsupported method restrictions
+Característica: Automatización de API para Catálogo de Productos
+  Como consumidor de la API
+  Quiero interactuar con los endpoints del catálogo de productos
+  Para consultar el catálogo completo, validar contratos de esquema y verificar restricciones de métodos no permitidos
 
   @smoke @regression @contract
-  Scenario: Successfully retrieve all products and validate JSON schema contract
-    Given the actor is ready to consume the Automation Exercise API
-    When the actor queries the complete products list
-    Then the response status code should be 200
-    And the response body should match the JSON schema "schemas/catalog/products_list_schema.json"
-    And the catalog should contain products with valid details
+  Escenario: Consultar exitosamente todos los productos y validar el contrato de esquema JSON
+    Dado que el actor está listo para consumir la API de Automation Exercise
+    Cuando el actor consulta la lista completa de productos
+    Entonces el código de estado de la respuesta debe ser 200
+    Y el cuerpo de la respuesta debe coincidir con el esquema JSON "schemas/catalog/products_list_schema.json"
+    Y el catálogo debe contener productos con detalles válidos
 
   @regression @negative
-  Scenario: Attempt POST to products list endpoint and receive method not supported response
-    Given the actor is ready to consume the Automation Exercise API
-    When the actor sends an unsupported "POST" request to the products list endpoint
-    Then the response message should be "This request method is not supported."
-    And the response code in the body should be 405
+  Escenario: Intentar método POST en el endpoint de lista de productos y recibir respuesta de método no soportado
+    Dado que el actor está listo para consumir la API de Automation Exercise
+    Cuando el actor envía una solicitud no soportada "POST" al endpoint de lista de productos
+    Entonces el mensaje de respuesta debe ser "This request method is not supported."
+    Y el código de respuesta en el cuerpo debe ser 405
