@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><testsuite errors="0" failures="0" name="Automatización de API para Búsqueda de Productos" skipped="0" tests="4" time="1.18" timestamp="2026-09-21 02:36:27"><testcase name="Buscar productos exitosamente con una palabra clave válida"/><testcase name="Buscar productos sin proporcionar el parámetro search_product"/></testsuite>
