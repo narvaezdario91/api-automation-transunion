@@ -5,8 +5,8 @@ Característica: Automatización de API para Búsqueda de Productos
   Quiero buscar productos utilizando palabras clave
   Para filtrar artículos del catálogo y recibir errores descriptivos cuando faltan criterios de búsqueda
 
-  @smoke @regression
-  Esquema del escenario: Buscar productos exitosamente con una palabra clave válida
+  @smoke @regression @api:API-05 @issue:5
+  Esquema del escenario: [API-05] [POST /api/searchProduct] Buscar productos exitosamente con una palabra clave válida
     Dado que el actor está listo para consumir la API de Automation Exercise
     Cuando el actor busca productos con la palabra clave "<palabra_clave>"
     Entonces el código de estado de la respuesta debe ser 200
@@ -19,9 +19,19 @@ Característica: Automatización de API para Búsqueda de Productos
       | tshirt        |
       | jean          |
 
-  @regression @negative
-  Escenario: Buscar productos sin proporcionar el parámetro search_product
+  @regression @api:API-05 @issue:5
+  Escenario: [API-05] [POST /api/searchProduct] Buscar productos con una palabra clave inexistente y obtener lista vacía
+    Dado que el actor está listo para consumir la API de Automation Exercise
+    Cuando el actor busca productos con la palabra clave "nonexistent_product_xyz123"
+    Entonces el código de estado de la respuesta debe ser 200
+    Y el código de respuesta en el cuerpo debe ser 200
+    Y el cuerpo de la respuesta debe coincidir con el esquema JSON "schemas/catalog/products_list_schema.json"
+    Y la lista de productos devuelta debe estar vacía
+
+  @regression @negative @api:API-06 @issue:6
+  Escenario: [API-06] [POST /api/searchProduct] Buscar productos sin proporcionar el parámetro search_product
     Dado que el actor está listo para consumir la API de Automation Exercise
     Cuando el actor busca productos sin proporcionar el parámetro de búsqueda
     Entonces el mensaje de respuesta debe ser "Bad request, search_product parameter is missing in POST request."
     Y el código de respuesta en el cuerpo debe ser 400
+    Y el cuerpo de la respuesta debe coincidir con el esquema JSON "schemas/common/api_response_schema.json"
