@@ -22,14 +22,8 @@ public class AccountStepDefinitions {
     private static final String DYNAMIC_USER_SESSION_KEY = "DYNAMIC_USER";
 
     @Dado("el actor crea una cuenta de usuario dinámica para eliminación")
-    public void elActorCreaUnaCuentaDeUsuarioDinamicaParaEliminacion() {
-        AccountData dynamicUser = AccountDataFactory.dynamicUser();
-        OnStage.theActorInTheSpotlight().remember(DYNAMIC_USER_SESSION_KEY, dynamicUser);
-        OnStage.theActorInTheSpotlight().attemptsTo(CreateAccount.withData(dynamicUser));
-    }
-
     @Cuando("el actor envía una solicitud para crear una nueva cuenta con datos válidos")
-    public void elActorEnviaUnaSolicitudParaCrearUnaNuevaCuentaConDatosValidos() {
+    public void elActorCreaUnaCuentaDeUsuarioDinamica() {
         AccountData dynamicUser = AccountDataFactory.dynamicUser();
         OnStage.theActorInTheSpotlight().remember(DYNAMIC_USER_SESSION_KEY, dynamicUser);
         OnStage.theActorInTheSpotlight().attemptsTo(CreateAccount.withData(dynamicUser));
