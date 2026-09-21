@@ -80,3 +80,11 @@ The test automation framework SHALL provide explicit scenario traceability to ex
 #### Scenario: Scenario titles declare API identifier and HTTP method signature
 - **WHEN** test scenarios are authored in Gherkin feature files
 - **THEN** each scenario title SHALL begin with the standardized prefix `[API-XX] [METHOD /endpoint]`
+
+### Requirement: Standard Generic API Response Schema Validation
+The test framework SHALL provide a centralized JSON schema contract `schemas/common/api_response_schema.json` to validate responses containing standard response code and message attributes, enforcing contract compliance across error handling and mutation endpoints.
+
+#### Scenario: Response body conforms to standard API response schema
+- **WHEN** an actor validates a standard status, mutation, or error response against `schemas/common/api_response_schema.json`
+- **THEN** the schema validation SHALL succeed without structural or data type violations
+

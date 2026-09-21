@@ -18,4 +18,9 @@ public class LoginStepDefinitions {
     public void elActorVerificaElLoginSinProporcionarElEmailConContrasena(String password) {
         OnStage.theActorInTheSpotlight().attemptsTo(VerifyLogin.withoutEmail(password));
     }
+
+    @Cuando("el actor verifica el login sin proporcionar la contraseña con email {string}")
+    public void elActorVerificaElLoginSinProporcionarLaContrasenaConEmail(String email) {
+        OnStage.theActorInTheSpotlight().attemptsTo(VerifyLogin.withoutPassword(email));
+    }
 }

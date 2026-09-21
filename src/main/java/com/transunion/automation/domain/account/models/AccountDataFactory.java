@@ -90,4 +90,15 @@ public final class AccountDataFactory {
         String uniqueEmail = "auto_user_" + timestamp + "@testautomation.com";
         return withEmailAndPassword(uniqueEmail, "Pass@" + timestamp);
     }
+
+    /**
+     * Builds test account data missing mandatory registration fields (email and password omitted).
+     *
+     * @return AccountData with only name populated
+     */
+    public static AccountData withoutRequiredFields() {
+        return AccountData.builder()
+                .name("Missing Fields User")
+                .build();
+    }
 }

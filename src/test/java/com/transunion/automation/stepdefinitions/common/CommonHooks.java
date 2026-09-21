@@ -19,7 +19,7 @@ public class CommonHooks {
         OnStage.setTheStage(new OnlineCast());
     }
 
-    @Before(value = "@requires_user or @api7", order = 1)
+    @Before(value = "@requires_user or @api:API-07", order = 1)
     public void ensureDefaultUserExists() {
         Actor actor = OnStage.theActorCalled("Automation Tester");
         actor.can(CallAnApi.at(EnvironmentConfig.getBaseUrl()));

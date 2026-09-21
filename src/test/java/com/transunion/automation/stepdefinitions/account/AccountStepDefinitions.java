@@ -78,4 +78,25 @@ public class AccountStepDefinitions {
                 DeleteAccount.withCredentials("invalid@notexist.com", "WrongPass123!")
         );
     }
+
+    @Cuando("el actor intenta crear una cuenta sin proporcionar los campos obligatorios")
+    public void elActorIntentaCrearUnaCuentaSinProporcionarLosCamposObligatorios() {
+        OnStage.theActorInTheSpotlight().attemptsTo(
+                CreateAccount.withData(AccountDataFactory.withoutRequiredFields())
+        );
+    }
+
+    @Cuando("el actor intenta actualizar los datos de la cuenta para un usuario inexistente {string}")
+    public void elActorIntentaActualizarLosDatosDeLaCuentaParaUnUsuarioInexistente(String email) {
+        OnStage.theActorInTheSpotlight().attemptsTo(
+                UpdateAccount.withData(AccountDataFactory.withEmailAndPassword(email, "WrongPass123!"))
+        );
+    }
+
+    @Cuando("el actor intenta eliminar una cuenta sin proporcionar la contraseña para el email {string}")
+    public void elActorIntentaEliminarUnaCuentaSinProporcionarLaContrasenaParaElEmail(String email) {
+        OnStage.theActorInTheSpotlight().attemptsTo(
+                DeleteAccount.withoutPassword(email)
+        );
+    }
 }

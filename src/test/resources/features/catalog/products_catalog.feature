@@ -19,3 +19,4 @@ Característica: Automatización de API para Catálogo de Productos
     Cuando el actor envía una solicitud no soportada "POST" al endpoint de lista de productos
     Entonces el mensaje de respuesta debe ser "This request method is not supported."
     Y el código de respuesta en el cuerpo debe ser 405
+    Y el cuerpo de la respuesta debe coincidir con el esquema JSON "schemas/common/api_response_schema.json"

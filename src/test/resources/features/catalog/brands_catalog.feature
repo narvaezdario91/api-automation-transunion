@@ -19,3 +19,4 @@ Característica: Automatización de API para Catálogo de Marcas
     Cuando el actor envía una solicitud no soportada "PUT" al endpoint de lista de marcas
     Entonces el mensaje de respuesta debe ser "This request method is not supported."
     Y el código de respuesta en el cuerpo debe ser 405
+    Y el cuerpo de la respuesta debe coincidir con el esquema JSON "schemas/common/api_response_schema.json"

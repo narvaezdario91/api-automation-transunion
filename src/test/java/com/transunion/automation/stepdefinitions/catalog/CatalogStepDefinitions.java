@@ -80,4 +80,12 @@ public class CatalogStepDefinitions {
                 .as("Al menos un producto devuelto debe coincidir con la palabra clave: " + keyword)
                 .isTrue();
     }
+
+    @Y("la lista de productos devuelta debe estar vacía")
+    public void laListaDeProductosDevueltaDebeEstarVacia() {
+        ProductsListResponseDto response = OnStage.theActorInTheSpotlight().asksFor(ProductsListResponse.received());
+        Assertions.assertThat(response.getProducts())
+                .as("La lista de productos debe estar vacía")
+                .isEmpty();
+    }
 }

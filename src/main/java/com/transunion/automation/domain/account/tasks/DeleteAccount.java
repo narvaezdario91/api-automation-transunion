@@ -35,6 +35,16 @@ public class DeleteAccount implements Task {
         return instrumented(DeleteAccount.class, email, password);
     }
 
+    /**
+     * Attempts to delete an account omitting the password parameter.
+     *
+     * @param email Account email
+     * @return Instrumented Task
+     */
+    public static DeleteAccount withoutPassword(String email) {
+        return instrumented(DeleteAccount.class, email, null);
+    }
+
     @Override
     @Step("{0} elimina la cuenta de usuario para email: #email")
     public <T extends Actor> void performAs(T actor) {

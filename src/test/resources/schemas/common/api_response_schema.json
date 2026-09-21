@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Standard API Response",
+  "description": "JSON schema for standard Automation Exercise API mutation and error responses",
+  "type": "object",
+  "required": ["responseCode", "message"],
+  "properties": {
+    "responseCode": {
+      "type": "integer",
+      "description": "Internal API response status code"
+    },
+    "message": {
+      "type": "string",
+      "description": "Human-readable status or error message"
+    }
+  },
+  "additionalProperties": false
+}
