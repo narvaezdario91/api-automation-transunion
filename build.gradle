@@ -89,6 +89,7 @@ sonar {
         property "sonar.tests", "src/test/java"
         property "sonar.java.binaries", "build/classes"
         property "sonar.junit.reportPaths", "build/test-results/test"
+        property "sonar.coverage.exclusions", "**/*"
     }
 }
 

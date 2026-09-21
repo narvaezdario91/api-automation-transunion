@@ -13,7 +13,7 @@ import org.junit.runner.RunWith;
         glue = "com.transunion.automation.stepdefinitions",
         snippets = CucumberOptions.SnippetType.CAMELCASE,
         plugin = {"pretty"},
-        tags = "@user-management"
+        tags = "@catalog or @auth or @account or @smoke or @regression"
 )
 public class ApiTestSuiteRunner {
 }
