@@ -1,8 +1,7 @@
 package com.transunion.automation.domain.catalog.questions;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.transunion.automation.core.questions.LastResponseBody;
 import com.transunion.automation.domain.catalog.models.ProductsListResponseDto;
-import net.serenitybdd.rest.SerenityRest;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Question;
 import net.serenitybdd.screenplay.annotations.Subject;
@@ -13,19 +12,12 @@ import net.serenitybdd.screenplay.annotations.Subject;
 @Subject("the products list response")
 public class ProductsListResponse implements Question<ProductsListResponseDto> {
 
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-
     public static ProductsListResponse received() {
         return new ProductsListResponse();
     }
 
     @Override
     public ProductsListResponseDto answeredBy(Actor actor) {
-        String responseBody = SerenityRest.lastResponse().asString();
-        try {
-            return OBJECT_MAPPER.readValue(responseBody, ProductsListResponseDto.class);
-        } catch (Exception e) {
-            throw new IllegalStateException("Failed to parse products list response: " + e.getMessage(), e);
-        }
+        return actor.asksFor(LastResponseBody.of(ProductsListResponseDto.class));
     }
 }

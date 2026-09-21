@@ -1,13 +1,11 @@
 package com.transunion.automation.stepdefinitions.catalog;
 
-import com.transunion.automation.core.constants.Endpoints;
 import com.transunion.automation.domain.catalog.models.BrandDto;
 import com.transunion.automation.domain.catalog.models.BrandsListResponseDto;
 import com.transunion.automation.domain.catalog.models.ProductDto;
 import com.transunion.automation.domain.catalog.models.ProductsListResponseDto;
 import com.transunion.automation.domain.catalog.questions.BrandsListResponse;
 import com.transunion.automation.domain.catalog.questions.ProductsListResponse;
-import com.transunion.automation.domain.catalog.tasks.ExecuteUnsupportedMethod;
 import com.transunion.automation.domain.catalog.tasks.GetBrandsList;
 import com.transunion.automation.domain.catalog.tasks.GetProductsList;
 import com.transunion.automation.domain.catalog.tasks.SearchProduct;
@@ -26,19 +24,9 @@ public class CatalogStepDefinitions {
         OnStage.theActorInTheSpotlight().attemptsTo(GetProductsList.fromCatalog());
     }
 
-    @Cuando("el actor envía una solicitud no soportada {string} al endpoint de lista de productos")
-    public void elActorEnviaUnaSolicitudNoSoportadaAlEndpointDeListaDeProductos(String httpMethod) {
-        OnStage.theActorInTheSpotlight().attemptsTo(ExecuteUnsupportedMethod.on(Endpoints.PRODUCTS_LIST, httpMethod));
-    }
-
     @Cuando("el actor consulta la lista completa de marcas")
     public void elActorConsultaLaListaCompletaDeMarcas() {
         OnStage.theActorInTheSpotlight().attemptsTo(GetBrandsList.fromCatalog());
-    }
-
-    @Cuando("el actor envía una solicitud no soportada {string} al endpoint de lista de marcas")
-    public void elActorEnviaUnaSolicitudNoSoportadaAlEndpointDeListaDeMarcas(String httpMethod) {
-        OnStage.theActorInTheSpotlight().attemptsTo(ExecuteUnsupportedMethod.on(Endpoints.BRANDS_LIST, httpMethod));
     }
 
     @Cuando("el actor busca productos con la palabra clave {string}")
@@ -77,7 +65,7 @@ public class CatalogStepDefinitions {
     }
 
     @Y("todos los productos devueltos deben coincidir con el criterio de búsqueda para {string}")
-    public void todosLosProductosDevueltosDebenCoincidirConElCriterioDeBusquedaPara(String keyword) {
+    public void todosLosProductosDebenCoincidirConElCriterioDeBusquedaPara(String keyword) {
         ProductsListResponseDto response = OnStage.theActorInTheSpotlight().asksFor(ProductsListResponse.received());
         Assertions.assertThat(response.getProducts())
                 .as("El resultado de búsqueda no debe estar vacío")

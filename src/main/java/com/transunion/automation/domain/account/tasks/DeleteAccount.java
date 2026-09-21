@@ -1,11 +1,13 @@
 package com.transunion.automation.domain.account.tasks;
 
 import com.transunion.automation.core.constants.Endpoints;
-import io.restassured.http.ContentType;
+import com.transunion.automation.core.tasks.DeleteWithForm;
 import net.serenitybdd.annotations.Step;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
-import net.serenitybdd.screenplay.rest.interactions.Delete;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static net.serenitybdd.screenplay.Tasks.instrumented;
 
@@ -36,19 +38,13 @@ public class DeleteAccount implements Task {
     @Override
     @Step("{0} elimina la cuenta de usuario para email: #email")
     public <T extends Actor> void performAs(T actor) {
-        actor.attemptsTo(
-                Delete.from(Endpoints.DELETE_ACCOUNT)
-                        .with(request -> {
-                            request.contentType(ContentType.URLENC.withCharset("UTF-8"))
-                                    .relaxedHTTPSValidation();
-                            if (email != null) {
-                                request.formParam("email", email);
-                            }
-                            if (password != null) {
-                                request.formParam("password", password);
-                            }
-                            return request;
-                        })
-        );
+        Map<String, String> formParams = new HashMap<>();
+        if (email != null) {
+            formParams.put("email", email);
+        }
+        if (password != null) {
+            formParams.put("password", password);
+        }
+        actor.attemptsTo(DeleteWithForm.from(Endpoints.DELETE_ACCOUNT, formParams));
     }
 }

@@ -1,4 +1,4 @@
-package com.transunion.automation.domain.catalog.tasks;
+package com.transunion.automation.core.tasks;
 
 import net.serenitybdd.annotations.Step;
 import net.serenitybdd.screenplay.Actor;

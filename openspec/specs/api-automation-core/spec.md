@@ -54,3 +54,14 @@ The framework SHALL organize automated test components into self-contained domai
 #### Scenario: Domain components remain cohesive within their domain package
 - **WHEN** a developer adds or updates tasks, models, or questions for a specific business entity
 - **THEN** all associated components reside within the designated domain package
+
+### Requirement: Centralized REST Helpers and Response Deserializers
+The framework SHALL provide core reusable interactions for form-urlencoded requests, generic response deserialization into strongly-typed DTOs, and protocol-level method execution to eliminate boilerplate across domain packages.
+
+#### Scenario: Actor deserializes response body using generic typed question
+- **WHEN** an actor inspects an API response body
+- **THEN** the response can be deserialized directly into any designated DTO class without custom ObjectMapper logic per domain
+
+#### Scenario: Actor executes form-urlencoded requests via centralized core helper
+- **WHEN** an actor sends form-urlencoded data to any API endpoint
+- **THEN** the request headers, encoding, and parameters are handled consistently by a reusable core interaction

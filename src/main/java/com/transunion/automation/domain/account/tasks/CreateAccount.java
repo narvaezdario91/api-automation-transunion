@@ -1,13 +1,12 @@
 package com.transunion.automation.domain.account.tasks;
 
 import com.transunion.automation.core.constants.Endpoints;
+import com.transunion.automation.core.tasks.PostForm;
 import com.transunion.automation.domain.account.models.AccountData;
 import com.transunion.automation.domain.account.models.AccountDataFactory;
-import io.restassured.http.ContentType;
 import net.serenitybdd.annotations.Step;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
-import net.serenitybdd.screenplay.rest.interactions.Post;
 
 import java.util.Map;
 
@@ -58,15 +57,6 @@ public class CreateAccount implements Task {
     @Step("{0} crea una cuenta de usuario para #accountData.email")
     public <T extends Actor> void performAs(T actor) {
         Map<String, String> formParams = accountData.toFormParamMap();
-
-        actor.attemptsTo(
-                Post.to(Endpoints.CREATE_ACCOUNT)
-                        .with(request -> {
-                            request.contentType(ContentType.URLENC.withCharset("UTF-8"))
-                                    .relaxedHTTPSValidation();
-                            formParams.forEach(request::formParam);
-                            return request;
-                        })
-        );
+        actor.attemptsTo(PostForm.to(Endpoints.CREATE_ACCOUNT, formParams));
     }
 }

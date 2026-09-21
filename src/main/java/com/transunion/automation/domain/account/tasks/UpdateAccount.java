@@ -1,12 +1,11 @@
 package com.transunion.automation.domain.account.tasks;
 
 import com.transunion.automation.core.constants.Endpoints;
+import com.transunion.automation.core.tasks.PutForm;
 import com.transunion.automation.domain.account.models.AccountData;
-import io.restassured.http.ContentType;
 import net.serenitybdd.annotations.Step;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
-import net.serenitybdd.screenplay.rest.interactions.Put;
 
 import java.util.Map;
 
@@ -37,15 +36,6 @@ public class UpdateAccount implements Task {
     @Step("{0} actualiza los datos de la cuenta para #accountData.email")
     public <T extends Actor> void performAs(T actor) {
         Map<String, String> formParams = accountData.toFormParamMap();
-
-        actor.attemptsTo(
-                Put.to(Endpoints.UPDATE_ACCOUNT)
-                        .with(request -> {
-                            request.contentType(ContentType.URLENC.withCharset("UTF-8"))
-                                    .relaxedHTTPSValidation();
-                            formParams.forEach(request::formParam);
-                            return request;
-                        })
-        );
+        actor.attemptsTo(PutForm.to(Endpoints.UPDATE_ACCOUNT, formParams));
     }
 }

@@ -1,11 +1,13 @@
 package com.transunion.automation.domain.auth.tasks;
 
 import com.transunion.automation.core.constants.Endpoints;
-import io.restassured.http.ContentType;
+import com.transunion.automation.core.tasks.PostForm;
 import net.serenitybdd.annotations.Step;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
-import net.serenitybdd.screenplay.rest.interactions.Post;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static net.serenitybdd.screenplay.Tasks.instrumented;
 
@@ -50,19 +52,13 @@ public class VerifyLogin implements Task {
     @Override
     @Step("{0} verifica login con email: #email")
     public <T extends Actor> void performAs(T actor) {
-        actor.attemptsTo(
-                Post.to(Endpoints.VERIFY_LOGIN)
-                        .with(request -> {
-                            request.contentType(ContentType.URLENC.withCharset("UTF-8"))
-                                    .relaxedHTTPSValidation();
-                            if (includeEmail && email != null) {
-                                request.formParam("email", email);
-                            }
-                            if (includePassword && password != null) {
-                                request.formParam("password", password);
-                            }
-                            return request;
-                        })
-        );
+        Map<String, String> formParams = new HashMap<>();
+        if (includeEmail && email != null) {
+            formParams.put("email", email);
+        }
+        if (includePassword && password != null) {
+            formParams.put("password", password);
+        }
+        actor.attemptsTo(PostForm.to(Endpoints.VERIFY_LOGIN, formParams));
     }
 }
